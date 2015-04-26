@@ -1,7 +1,3 @@
-machine:
-  golang:
-    version: 1.3.3
-
 test:
   override:
     - make tests
