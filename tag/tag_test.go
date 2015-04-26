@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/CotaPreco/Horus/tag"
+	"github.com/stretchr/testify/assert"
 )
 
 var tags = map[string]bool{
@@ -17,18 +18,23 @@ var tags = map[string]bool{
 	"**valid**": true,
 }
 
-func TestTag(t *testing.T) {
-	for tstr, valid := range tags {
-		tag, err := tag.NewTag(tstr)
+func TestTagCastsToString(t *testing.T) {
+	tag, err := tag.NewTag(":user")
 
-		if (err != nil && valid) || (err == nil && !valid) {
-			t.Error()
+	assert.Nil(t, err)
+	assert.Equal(t, ":user", tag.String())
+}
+
+func TestTag(t *testing.T) {
+	for tagAsString, valid := range tags {
+		_, err := tag.NewTag(tagAsString)
+
+		if valid {
+			assert.Nil(t, err)
 		}
 
-		if err == nil {
-			if tag.String() != tstr {
-				t.Error()
-			}
+		if !valid {
+			assert.NotNil(t, err)
 		}
 	}
 }
