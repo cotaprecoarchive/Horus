@@ -1,2 +1,2 @@
 tests:
-	@go test -v ./... -race
+	@go test -v ./...
