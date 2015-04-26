@@ -9,7 +9,9 @@ type TaggedMessage struct {
 
 func NewTaggedMessage(tag tag.Tag, payload []byte) *TaggedMessage {
 	return &TaggedMessage{
-		Message{payload},
+		Message{
+			payload,
+		},
 		tag,
 	}
 }
