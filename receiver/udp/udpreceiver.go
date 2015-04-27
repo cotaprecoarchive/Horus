@@ -43,7 +43,6 @@ func (r *UdpReceiver) Receive() {
 
 		_, _, err := conn.ReadFromUDP(message)
 
-		// TODO: ...use aggregate, attempt to receive using `O(n)` strategies
 		if err == nil && r.receiveStrategy.CanReceive(message) {
 			r.NotifyAll(r.receiveStrategy.Receive(message))
 		}
