@@ -27,7 +27,7 @@ func NewUdpReceiver(
 }
 
 func (r *UdpReceiver) Receive() {
-	conn, err := net.ListenUDP("udp4", &net.UDPAddr{
+	conn, err := net.ListenUDP("udp", &net.UDPAddr{
 		IP:   net.ParseIP(r.host),
 		Port: r.port,
 	})

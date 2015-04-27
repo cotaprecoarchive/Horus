@@ -12,10 +12,6 @@ func NewReceiveStrategyChain(strategies []ReceiveStrategy) *ReceiveStrategyChain
 	}
 }
 
-// func (c *ReceiveStrategyChain) AddReceiveStrategy(strategy ReceiveStrategy) {
-// 	c.strategies = append(c.strategies, strategy)
-// }
-
 func (c *ReceiveStrategyChain) CanReceive(message []byte) bool {
 	for _, strategy := range c.strategies {
 		if strategy.CanReceive(message) {
