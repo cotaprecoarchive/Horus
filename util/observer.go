@@ -1,5 +1,5 @@
 package util
 
 type Observer interface {
-	Update(subject interface{})
+	Update(args ...interface{})
 }

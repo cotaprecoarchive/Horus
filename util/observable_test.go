@@ -16,8 +16,8 @@ type Observer struct {
 	mock.Mock
 }
 
-func (m *Observer) Update(subject interface{}) {
-	m.Called(subject)
+func (m *Observer) Update(args ...interface{}) {
+	m.Called(args)
 }
 
 // --
