@@ -11,11 +11,11 @@ import (
 func TestCanReceive(t *testing.T) {
 	var strategy = new(udp.NullByteReceiveStrategy)
 
-	assert.False(t, strategy.CanReceive([]byte("invalid\x00")))
-	assert.False(t, strategy.CanReceive([]byte("\x00invalid")))
 	assert.False(t, strategy.CanReceive([]byte("not\x00ok\x00sorry")))
 	assert.False(t, strategy.CanReceive([]byte("")))
 
+	assert.True(t, strategy.CanReceive([]byte("\x00ok")))
+	assert.True(t, strategy.CanReceive([]byte("ok\x00")))
 	assert.True(t, strategy.CanReceive([]byte("payload")))
 	assert.True(t, strategy.CanReceive([]byte("tag\x00payload")))
 }

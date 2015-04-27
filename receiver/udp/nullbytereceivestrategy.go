@@ -11,11 +11,6 @@ type NullByteReceiveStrategy struct {
 }
 
 func (s *NullByteReceiveStrategy) CanReceive(message []byte) bool {
-	// shouldn't start with \0 or even ends with \0 exclusively
-	if bytes.HasSuffix(message, []byte{0}) || bytes.HasPrefix(message, []byte{0}) {
-		return false
-	}
-
 	message = s.trim(message)
 
 	// empty? can't
