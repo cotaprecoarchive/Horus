@@ -28,7 +28,7 @@ class NullByteTest extends TestCase
     /**
      * @test
      */
-    public function escapesNullByteBeforePacking()
+    public function packOnlyMessage()
     {
         $message = new Message("message\0with\0null\0bytes");
 
@@ -38,7 +38,7 @@ class NullByteTest extends TestCase
     /**
      * @test
      */
-    public function escapesTagNullByte()
+    public function packTaggedMessage()
     {
         $message = new TaggedMessage(
             Tag::fromString("\0tag\0"),
