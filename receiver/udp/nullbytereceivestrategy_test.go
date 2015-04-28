@@ -21,7 +21,7 @@ func TestCanReceive(t *testing.T) {
 
 	// ...can't receive if invalid tag was present (refs: gh:issue #8)
 	assert.False(t, strategy.CanReceive([]byte("#invalid\x00payload")))
-	assert.False(t, strategy.CanReceive([]byte("$invalid\x00payload")))
+	assert.False(t, strategy.CanReceive([]byte("\"invalid\x00payload")))
 }
 
 func TestReceive(t *testing.T) {
