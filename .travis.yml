@@ -4,7 +4,7 @@ go:
   - 1.3
 
 install:
-  - make fetch-dependencies
+  - go get -v -u ./...
 
 script:
   - ./ci-test
