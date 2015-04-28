@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/CotaPreco/Horus/command"
 	"github.com/CotaPreco/Horus/receiver/udp"
@@ -35,11 +36,33 @@ func main() {
 	}
 
 	// --
-	udpHost := flag.String("receiver-udp-host", "0.0.0.0", "Defines the host IP for `UdpReceiver`")
-	udpPort := flag.Int("receiver-udp-port", 7600, "Defines which port `UdpReceiver` will be listening")
+	udpHost := flag.String(
+		"receiver-udp-host",
+		util.EnvOrDefault("UDP_RECEIVER_HOST", "0.0.0.0"),
+		"Defines the host IP for `UdpReceiver`",
+	)
 
-	wsHost := flag.String("ws-host", "0.0.0.0", "Where websocket will be available?")
-	wsPort := flag.Int("ws-port", 8000, "And in which port people will connect?")
+	udpReceiverPort, _ := strconv.Atoi(util.EnvOrDefault("UDP_RECEIVER_PORT", "7600"))
+
+	udpPort := flag.Int(
+		"receiver-udp-port",
+		udpReceiverPort,
+		"Defines which port `UdpReceiver` will be listening",
+	)
+
+	wsHost := flag.String(
+		"ws-host",
+		util.EnvOrDefault("WS_HOST", "0.0.0.0"),
+		"Where websocket will be available?",
+	)
+
+	wsDefaultPort, _ := strconv.Atoi(util.EnvOrDefault("WS_PORT", "8000"))
+
+	wsPort := flag.Int(
+		"ws-port",
+		wsDefaultPort,
+		"And in which port people will connect?",
+	)
 
 	flag.Parse()
 	// --
