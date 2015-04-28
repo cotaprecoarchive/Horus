@@ -5,7 +5,7 @@ namespace CotaPreco\Horus\Message;
 /**
  * @author Andrey K. Vital <andreykvital@gmail.com>
  */
-class Message
+class Message implements MessageInterface
 {
     /**
      * @var string
