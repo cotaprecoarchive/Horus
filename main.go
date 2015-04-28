@@ -26,8 +26,11 @@ var upgrader = websocket.Upgrader{
 func main() {
 	flag.Usage = func() {
 		flag.CommandLine.SetOutput(os.Stdout)
+
 		fmt.Fprint(os.Stdout, "Usage: horus [OPTIONS] :-)\n\n")
+
 		flag.PrintDefaults()
+
 		os.Exit(0)
 	}
 

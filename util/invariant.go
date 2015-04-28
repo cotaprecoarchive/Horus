@@ -1,7 +1,6 @@
 package util
 
 import (
-	"bytes"
 	"fmt"
 	"os"
 )
@@ -11,12 +10,10 @@ func Invariant(condition bool, args ...interface{}) {
 		return
 	}
 
-	var buffer bytes.Buffer
-
-	buffer.WriteString("Invariant Violation: ")
-	buffer.WriteString(fmt.Sprintf(args[0].(string), args[1:]...))
-
-	fmt.Println(buffer.String())
+	fmt.Println(
+		"Invariant Violation: " +
+			fmt.Sprintf(args[0].(string), args[1:]...),
+	)
 
 	os.Exit(1)
 }
