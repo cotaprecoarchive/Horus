@@ -1,6 +1,6 @@
 {
     "name": "cotapreco/horus",
-    "description": "A simple PHP client for sending messages to a receiver",
+    "description": "A simple PHP client for sending messages to a Horus receiver :-)",
     "authors": [{
         "name": "Andrey K.",
         "email": "andreykvital@gmail.com"
