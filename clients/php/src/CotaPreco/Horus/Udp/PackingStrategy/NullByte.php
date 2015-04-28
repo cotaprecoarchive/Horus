@@ -5,12 +5,12 @@ namespace CotaPreco\Horus\Udp\PackingStrategy;
 use CotaPreco\Horus\Message\Message;
 use CotaPreco\Horus\Message\MessageInterface;
 use CotaPreco\Horus\Message\TaggedMessage;
-use CotaPreco\Horus\MessagePackerInterface;
+use CotaPreco\Horus\MessagePackingStrategyInterface;
 
 /**
  * @author Andrey K. Vital <andreykvital@gmail.com>
  */
-final class NullByte implements MessagePackerInterface
+final class NullByte implements MessagePackingStrategyInterface
 {
     /**
      * {@inheritDoc}
