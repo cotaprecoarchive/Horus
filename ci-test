@@ -14,3 +14,7 @@ go get github.com/stretchr/testify
 go get github.com/gorilla/websocket
 
 make tests
+
+# client:php
+make -C ./clients/php check-cs
+make -C ./clients/php tests
