@@ -12,20 +12,21 @@ final class Tag implements TagInterface
      */
     private $tag;
 
-    private function __construct()
+    /**
+     * @param string $tag
+     */
+    public function __construct($tag)
     {
+        $this->tag = (string) $tag;
     }
 
     /**
-     * @param  string $tagAsString
+     * @param  string $tag
      * @return self
      */
-    public static function fromString($tagAsString)
+    public static function fromString($tag)
     {
-        $tag = new self();
-        $tag->tag = (string) $tagAsString;
-
-        return $tag;
+        return new self($tag);
     }
 
     /**
