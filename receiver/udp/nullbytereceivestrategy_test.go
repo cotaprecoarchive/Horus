@@ -23,14 +23,14 @@ func TestCanReceive(t *testing.T) {
 	assert.True(t, strategy.CanReceive([]byte("ok\x00")))
 	assert.True(t, strategy.CanReceive([]byte("payload")))
 	assert.True(t, strategy.CanReceive([]byte("tag\x00payload")))
-
-	// ...can't receive if invalid tag was present (refs: gh:issue #8)
-	assert.False(t, strategy.CanReceive([]byte("#invalid\x00payload")))
-	assert.False(t, strategy.CanReceive([]byte("\"invalid\x00payload")))
 }
 
 func TestReceive(t *testing.T) {
 	var strategy = new(udp.NullByteReceiveStrategy)
+
+	// ...can't receive if invalid tag was present (refs: gh:issue #8)
+	assert.Nil(t, strategy.Receive([]byte("#invalid\x00payload")))
+	assert.Nil(t, strategy.Receive([]byte("\"invalid\x00payload")))
 
 	assert.IsType(t, new(message.Message), strategy.Receive([]byte("message")))
 	assert.IsType(t, new(message.TaggedMessage), strategy.Receive([]byte("tag\x00message")))

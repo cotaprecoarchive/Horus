@@ -17,7 +17,7 @@ func (s *NullByteReceiveStrategy) CanReceive(message []byte) bool {
 		return true
 	}
 
-	return isValid(message) && extractTags(message) != nil
+	return isValid(message)
 }
 
 func (s *NullByteReceiveStrategy) Receive(msg []byte) message.MessageInterface {
@@ -30,15 +30,20 @@ func (s *NullByteReceiveStrategy) Receive(msg []byte) message.MessageInterface {
 	}
 
 	var tags = extractTags(msg)
-	var msgb = trim(msg[last:])
+
+	if tags == nil {
+		return nil
+	}
+
+	var trimmed = trim(msg[last:])
 
 	// > 0 == 1 tagged
 	if len(tags) == 1 {
-		return message.NewTaggedMessage(tags[0], msgb)
+		return message.NewTaggedMessage(tags[0], trimmed)
 	}
 
 	// ...sequence (full-match)
-	return message.NewTagSequencedMessage(tags, msgb)
+	return message.NewTagSequencedMessage(tags, trimmed)
 }
 
 func extractTags(msg []byte) []tag.Tag {
@@ -51,10 +56,15 @@ func extractTags(msg []byte) []tag.Tag {
 	for i, l = 0, len(msg); i < l-1; i++ {
 		ttag = append(ttag, msg[i])
 
-		var hn = msg[i] == 0 && msg[i+1] == 0
-		var la = msg[i] != 0 && msg[i+1] == 0 && (i+1) == last
+		var nextIsNullByte = msg[i+1] == 0
 
-		if hn || la {
+		// ...current && next is null-byte
+		var nx = msg[i] == 0 && nextIsNullByte
+
+		// ...current is not null-byte, but next && next is the last null-byte
+		var lt = msg[i] != 0 && nextIsNullByte && (i+1) == last
+
+		if nx || lt {
 			t, err := tag.NewTag(string(trim(ttag)))
 
 			if err != nil {
@@ -86,25 +96,25 @@ func isValid(message []byte) bool {
 		return false
 	}
 
-	var i, l, lo, le int
+	var i, l, longest, length int
 
 	for i, l = 0, len(message); i < l-1; i++ {
 		if message[i] == message[i+1] {
-			le++
+			length++
 		} else {
-			if le > lo {
-				lo = le
+			if length > longest {
+				longest = length
 			}
 
-			le = 1
+			length = 1
 		}
 	}
 
-	if le > lo {
-		lo = le
+	if length > longest {
+		longest = length
 	}
 
-	return lo < 3
+	return longest < 3
 }
 
 func trim(message []byte) []byte {
