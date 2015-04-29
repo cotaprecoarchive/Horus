@@ -34,6 +34,7 @@ func (h *TaggedConnectionHub) Subscribe(connection *websocket.Conn) {
 
 func (h *TaggedConnectionHub) Send(msg message.MessageInterface) {
 	switch msg.(type) {
+	// ...broadcast
 	case *message.Message:
 		var m = msg.(*message.Message)
 
@@ -41,6 +42,7 @@ func (h *TaggedConnectionHub) Send(msg message.MessageInterface) {
 			connection.WriteMessage(websocket.TextMessage, m.Payload)
 		}
 		break
+	// ...contains a particular tag
 	case *message.TaggedMessage:
 		var m = msg.(*message.TaggedMessage)
 
