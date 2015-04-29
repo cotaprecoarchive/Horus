@@ -38,6 +38,8 @@ func (r *UdpReceiver) Receive() {
 		err,
 	)
 
+	defer conn.Close()
+
 	for {
 		message := make([]byte, 1024)
 
