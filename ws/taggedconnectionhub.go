@@ -64,7 +64,7 @@ func (h *TaggedConnectionHub) Send(msg message.MessageInterface) {
 		}
 		break
 
-	// ...contains all tags
+	// ...contains all tags (refs gh:issues #11)
 	case *message.TagSequencedMessage:
 		var m = msg.(*message.TagSequencedMessage)
 
