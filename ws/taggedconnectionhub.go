@@ -33,6 +33,10 @@ func (h *TaggedConnectionHub) Subscribe(connection *websocket.Conn) {
 }
 
 func (h *TaggedConnectionHub) Send(msg message.MessageInterface) {
+	if msg == nil {
+		return
+	}
+
 	switch msg.(type) {
 	// ...broadcast
 	case *message.Message:
@@ -51,6 +55,17 @@ func (h *TaggedConnectionHub) Send(msg message.MessageInterface) {
 				if tag.String() == m.Tag.String() {
 					connection.WriteMessage(websocket.TextMessage, m.Payload)
 				}
+			}
+		}
+		break
+
+	// ...contains all tags
+	case *message.TagSequencedMessage:
+		var m = msg.(*message.TagSequencedMessage)
+
+		for connection, tags := range h.connections {
+			if tagUtil.ContainsAllTags(m.Tags, tags) {
+				connection.WriteMessage(websocket.TextMessage, m.Payload)
 			}
 		}
 		break
