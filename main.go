@@ -24,12 +24,15 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
+const (
+	VERSION = "0.1.0-beta"
+)
+
 func main() {
 	flag.Usage = func() {
 		flag.CommandLine.SetOutput(os.Stdout)
 
-		fmt.Fprint(os.Stdout, "Usage: horus [OPTIONS] :-)\n\n")
-
+		fmt.Fprintf(os.Stdout, "Horus v.%s\nUsage: horus [...OPTIONS] :-)\n\n", VERSION)
 		flag.PrintDefaults()
 
 		os.Exit(0)

@@ -1,10 +1,12 @@
 package ws
 
 import (
+	"sync"
+
 	"github.com/CotaPreco/Horus/command"
 	"github.com/CotaPreco/Horus/message"
 	"github.com/CotaPreco/Horus/tag"
-	tagUtil "github.com/CotaPreco/Horus/tag/util"
+	tutil "github.com/CotaPreco/Horus/tag/util"
 	"github.com/CotaPreco/Horus/util"
 	wst "github.com/CotaPreco/Horus/ws/tag"
 	"github.com/gorilla/websocket"
@@ -13,6 +15,7 @@ import (
 type TaggedConnectionHub struct {
 	util.Observer
 	command.CommandHandler
+	sync.Mutex
 	connections map[*websocket.Conn][]tag.Tag
 }
 
@@ -23,9 +26,13 @@ func NewTaggedConnectionHub() *TaggedConnectionHub {
 }
 
 func (h *TaggedConnectionHub) Unsubscribe(connection *websocket.Conn) {
+	h.Lock()
+
 	if h.hasConnection(connection) {
 		delete(h.connections, connection)
 	}
+
+	h.Unlock()
 }
 
 func (h *TaggedConnectionHub) Subscribe(connection *websocket.Conn) {
@@ -33,7 +40,12 @@ func (h *TaggedConnectionHub) Subscribe(connection *websocket.Conn) {
 }
 
 func (h *TaggedConnectionHub) Send(msg message.MessageInterface) {
+	if msg == nil {
+		return
+	}
+
 	switch msg.(type) {
+	// ...broadcast
 	case *message.Message:
 		var m = msg.(*message.Message)
 
@@ -41,14 +53,24 @@ func (h *TaggedConnectionHub) Send(msg message.MessageInterface) {
 			connection.WriteMessage(websocket.TextMessage, m.Payload)
 		}
 		break
+	// ...contains a particular tag
 	case *message.TaggedMessage:
 		var m = msg.(*message.TaggedMessage)
 
 		for connection, tags := range h.connections {
-			for _, tag := range tags {
-				if tag.String() == m.Tag.String() {
-					connection.WriteMessage(websocket.TextMessage, m.Payload)
-				}
+			if tutil.ContainsTag(m.Tag, tags) {
+				connection.WriteMessage(websocket.TextMessage, m.Payload)
+			}
+		}
+		break
+
+	// ...contains all tags (refs gh:issues #11)
+	case *message.TagSequencedMessage:
+		var m = msg.(*message.TagSequencedMessage)
+
+		for connection, tags := range h.connections {
+			if tutil.ContainsAllTags(m.Tags, tags) {
+				connection.WriteMessage(websocket.TextMessage, m.Payload)
 			}
 		}
 		break
@@ -74,6 +96,8 @@ func (h *TaggedConnectionHub) CanHandle(cmd command.Command) bool {
 
 // `command.CommandHandler`
 func (h *TaggedConnectionHub) Handle(cmd command.Command) {
+	h.Lock()
+
 	switch cmd.(type) {
 	case *wst.ATAGCommand:
 		var c = cmd.(*wst.ATAGCommand)
@@ -89,6 +113,7 @@ func (h *TaggedConnectionHub) Handle(cmd command.Command) {
 		var c = cmd.(*wst.RTAGCommand)
 
 		if !h.hasConnection(c.Connection) {
+			h.Unlock()
 			return
 		}
 
@@ -109,6 +134,8 @@ func (h *TaggedConnectionHub) Handle(cmd command.Command) {
 		h.connections[c.Connection] = retain
 		break
 	}
+
+	h.Unlock()
 }
 
 func (h *TaggedConnectionHub) collectTagsToAdd(
@@ -122,7 +149,7 @@ func (h *TaggedConnectionHub) collectTagsToAdd(
 	}
 
 	for _, candidate := range tags {
-		if !tagUtil.ContainsTag(candidate, h.connections[connection]) {
+		if !tutil.ContainsTag(candidate, h.connections[connection]) {
 			add = append(add, candidate)
 		}
 	}
