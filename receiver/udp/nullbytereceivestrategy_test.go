@@ -14,6 +14,11 @@ func TestCanReceive(t *testing.T) {
 	assert.False(t, strategy.CanReceive([]byte("not\x00ok\x00sorry")))
 	assert.False(t, strategy.CanReceive([]byte("")))
 
+	// ..sequenced
+	assert.False(t, strategy.CanReceive([]byte("n\x00\x00\x00ope")))
+	assert.True(t, strategy.CanReceive([]byte("tag\x00\x00tag\x00yes\x00")))
+	assert.True(t, strategy.CanReceive([]byte("tag\x00\x00tag\x00\x00tag\x00\x00tag\x00message")))
+
 	assert.True(t, strategy.CanReceive([]byte("\x00ok")))
 	assert.True(t, strategy.CanReceive([]byte("ok\x00")))
 	assert.True(t, strategy.CanReceive([]byte("payload")))
