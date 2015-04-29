@@ -39,6 +39,7 @@ func main() {
 	}
 
 	// --
+	// TODO: ...remove setup from main, encapsulate it
 	udpHost := flag.String(
 		"receiver-udp-host",
 		util.EnvOrDefault("UDP_RECEIVER_HOST", "0.0.0.0"),
