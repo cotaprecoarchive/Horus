@@ -76,8 +76,6 @@ func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		conn, err := upgrader.Upgrade(w, r, nil)
 
-		defer conn.Close()
-
 		if err != nil {
 			if _, ok := err.(websocket.HandshakeError); !ok {
 				util.Invariant(
@@ -88,6 +86,8 @@ func main() {
 			}
 		}
 
+		defer conn.Close()
+
 		hub.Subscribe(conn)
 
 		for {
@@ -95,7 +95,6 @@ func main() {
 
 			if err != nil {
 				hub.Unsubscribe(conn)
-				conn.Close()
 				return
 			}
 

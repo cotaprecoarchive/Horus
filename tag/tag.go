@@ -10,8 +10,10 @@ type Tag interface {
 }
 
 func NewTag(t string) (Tag, error) {
-	if matched, _ := regexp.MatchString("(?i)^[a-zA-Z0-9_\\-\\*:]{1,255}$", t); !matched {
-		return nil, errors.New("A tag should contains only `a-zA-Z0-9_-*:` 1..255")
+	// RFC 3986 - Section 3.4
+	// @link http://tools.ietf.org/html/rfc3986#page-23
+	if matched, _ := regexp.MatchString("(?i)^[a-zA-Z0-9-\\._~!\\$&\\'\\(\\)\\*\\+\\,;=\\:@\\/\\?]{1,255}$", t); !matched {
+		return nil, errors.New("A tag should contains only `A-Z a-z 0-9 - . _ ~ ! $ & ' ( ) * + , ; = : @ / ?` 1..255")
 	}
 
 	return &tag{
