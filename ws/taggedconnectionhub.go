@@ -1,6 +1,8 @@
 package ws
 
 import (
+	"sync"
+
 	"github.com/CotaPreco/Horus/command"
 	"github.com/CotaPreco/Horus/message"
 	"github.com/CotaPreco/Horus/tag"
@@ -13,6 +15,7 @@ import (
 type TaggedConnectionHub struct {
 	util.Observer
 	command.CommandHandler
+	sync.Mutex
 	connections map[*websocket.Conn][]tag.Tag
 }
 
@@ -23,9 +26,13 @@ func NewTaggedConnectionHub() *TaggedConnectionHub {
 }
 
 func (h *TaggedConnectionHub) Unsubscribe(connection *websocket.Conn) {
+	h.Lock()
+
 	if h.hasConnection(connection) {
 		delete(h.connections, connection)
 	}
+
+	h.Unlock()
 }
 
 func (h *TaggedConnectionHub) Subscribe(connection *websocket.Conn) {
@@ -89,6 +96,8 @@ func (h *TaggedConnectionHub) CanHandle(cmd command.Command) bool {
 
 // `command.CommandHandler`
 func (h *TaggedConnectionHub) Handle(cmd command.Command) {
+	h.Lock()
+
 	switch cmd.(type) {
 	case *wst.ATAGCommand:
 		var c = cmd.(*wst.ATAGCommand)
@@ -104,6 +113,7 @@ func (h *TaggedConnectionHub) Handle(cmd command.Command) {
 		var c = cmd.(*wst.RTAGCommand)
 
 		if !h.hasConnection(c.Connection) {
+			h.Unlock()
 			return
 		}
 
@@ -124,6 +134,8 @@ func (h *TaggedConnectionHub) Handle(cmd command.Command) {
 		h.connections[c.Connection] = retain
 		break
 	}
+
+	h.Unlock()
 }
 
 func (h *TaggedConnectionHub) collectTagsToAdd(
