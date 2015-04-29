@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"strconv"
+	"strings"
 
 	"github.com/CotaPreco/Horus/command"
 	"github.com/CotaPreco/Horus/receiver/udp"
@@ -24,53 +24,76 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-const (
-	VERSION = "0.1.0-beta"
+var (
+	VERSION   = "0.1.0-beta"
+	GITCOMMIT = "N/A"
+)
+
+var (
+	defaultWsHost          = util.EnvOrDefault("WS_HOST", "0.0.0.0")
+	defaultWsPort          = util.EnvOrDefault("WS_PORT", "8000")
+	defaultUdpReceiverHost = util.EnvOrDefault("UDP_RECEIVER_HOST", "0.0.0.0")
+	defaultUdpReceiverPort = util.EnvOrDefault("UDP_RECEIVER_PORT", "7600")
+)
+
+var (
+	flgVersion = flag.Bool("v", false, "")
+	udpHost    = flag.String("receiver-udp-host", defaultUdpReceiverHost, "")
+	udpPort    = flag.Int("receiver-udp-port", util.Str2int(defaultUdpReceiverPort), "")
+	wsHost     = flag.String("ws-host", defaultWsHost, "")
+	wsPort     = flag.Int("ws-port", util.Str2int(defaultWsPort), "")
 )
 
 func main() {
 	flag.Usage = func() {
 		flag.CommandLine.SetOutput(os.Stdout)
 
-		fmt.Fprintf(os.Stdout, "Horus v.%s\nUsage: horus [...OPTIONS] :-)\n\n", VERSION)
-		flag.PrintDefaults()
+		var help = strings.Trim(`
+Horus — An event-hub for pipelining events from any direction to the client :-)
+
+USAGE:
+	horus [...OPTIONS]
+
+OPTIONS:
+%s
+`, "\n")
+
+		var opts string
+
+		for _, opt := range [][]string{
+			{
+				"-v",
+				"Prints the current version of `Horus`",
+			}, {
+				"-ws-host",
+				"Defines in which IP WebSocket will bind to",
+			}, {
+				"-ws-port",
+				"Defines the port for the WebSocket server listen for connections",
+			}, {
+				"-receiver-udp-host",
+				"Defines in which IP the UDP receiver will bind to",
+			}, {
+				"-receiver-udp-port",
+				"Defines the port for receiver listen on",
+			},
+		} {
+			opts += fmt.Sprintf("\t%-18.20s /* %s */\n", opt[0], opt[1])
+		}
+
+		fmt.Printf(help, opts)
 
 		os.Exit(0)
 	}
 
-	// --
-	// TODO: ...remove setup from main, encapsulate it
-	udpHost := flag.String(
-		"receiver-udp-host",
-		util.EnvOrDefault("UDP_RECEIVER_HOST", "0.0.0.0"),
-		"Defines the host IP for `UdpReceiver`",
-	)
-
-	udpReceiverPort, _ := strconv.Atoi(util.EnvOrDefault("UDP_RECEIVER_PORT", "7600"))
-
-	udpPort := flag.Int(
-		"receiver-udp-port",
-		udpReceiverPort,
-		"Defines which port `UdpReceiver` will be listening",
-	)
-
-	wsHost := flag.String(
-		"ws-host",
-		util.EnvOrDefault("WS_HOST", "0.0.0.0"),
-		"Where websocket will be available?",
-	)
-
-	wsDefaultPort, _ := strconv.Atoi(util.EnvOrDefault("WS_PORT", "8000"))
-
-	wsPort := flag.Int(
-		"ws-port",
-		wsDefaultPort,
-		"And in which port people will connect?",
-	)
-
 	flag.Parse()
-	// --
 
+	if *flgVersion {
+		fmt.Printf("Horus v%s, build %s\n", VERSION, GITCOMMIT)
+		return
+	}
+
+	// --
 	bus := command.NewGenericCommandBus()
 	hub := ws.NewTaggedConnectionHub()
 
@@ -101,12 +124,6 @@ func main() {
 				hub.Unsubscribe(conn)
 				return
 			}
-
-			// util.Invariant(
-			// 	err == nil,
-			// 	"... `%s` on `ReadMessage`",
-			// 	err,
-			// )
 
 			if messageType == websocket.TextMessage {
 				bus.Dispatch(wsc.NewSimpleTextCommand(string(message), conn))
