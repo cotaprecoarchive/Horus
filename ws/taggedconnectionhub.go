@@ -4,7 +4,7 @@ import (
 	"github.com/CotaPreco/Horus/command"
 	"github.com/CotaPreco/Horus/message"
 	"github.com/CotaPreco/Horus/tag"
-	tagUtil "github.com/CotaPreco/Horus/tag/util"
+	tutil "github.com/CotaPreco/Horus/tag/util"
 	"github.com/CotaPreco/Horus/util"
 	wst "github.com/CotaPreco/Horus/ws/tag"
 	"github.com/gorilla/websocket"
@@ -51,10 +51,8 @@ func (h *TaggedConnectionHub) Send(msg message.MessageInterface) {
 		var m = msg.(*message.TaggedMessage)
 
 		for connection, tags := range h.connections {
-			for _, tag := range tags {
-				if tag.String() == m.Tag.String() {
-					connection.WriteMessage(websocket.TextMessage, m.Payload)
-				}
+			if tutil.ContainsTag(m.Tag, tags) {
+				connection.WriteMessage(websocket.TextMessage, m.Payload)
 			}
 		}
 		break
@@ -64,7 +62,7 @@ func (h *TaggedConnectionHub) Send(msg message.MessageInterface) {
 		var m = msg.(*message.TagSequencedMessage)
 
 		for connection, tags := range h.connections {
-			if tagUtil.ContainsAllTags(m.Tags, tags) {
+			if tutil.ContainsAllTags(m.Tags, tags) {
 				connection.WriteMessage(websocket.TextMessage, m.Payload)
 			}
 		}
@@ -139,7 +137,7 @@ func (h *TaggedConnectionHub) collectTagsToAdd(
 	}
 
 	for _, candidate := range tags {
-		if !tagUtil.ContainsTag(candidate, h.connections[connection]) {
+		if !tutil.ContainsTag(candidate, h.connections[connection]) {
 			add = append(add, candidate)
 		}
 	}
