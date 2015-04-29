@@ -7,32 +7,31 @@ import (
 	"github.com/CotaPreco/Horus/message"
 	"github.com/CotaPreco/Horus/tag"
 	tutil "github.com/CotaPreco/Horus/tag/util"
-	"github.com/CotaPreco/Horus/util"
 	wst "github.com/CotaPreco/Horus/ws/tag"
 	"github.com/gorilla/websocket"
 )
 
 type TaggedConnectionHub struct {
-	util.Observer
-	command.CommandHandler
-	sync.Mutex
+	*sync.Mutex
 	connections map[*websocket.Conn][]tag.Tag
+	// util.Observer
+	// command.CommandHandler
 }
 
 func NewTaggedConnectionHub() *TaggedConnectionHub {
 	return &TaggedConnectionHub{
-		connections: make(map[*websocket.Conn][]tag.Tag),
+		&sync.Mutex{},
+		map[*websocket.Conn][]tag.Tag{},
 	}
 }
 
 func (h *TaggedConnectionHub) Unsubscribe(connection *websocket.Conn) {
 	h.Lock()
+	defer h.Unlock()
 
 	if h.hasConnection(connection) {
 		delete(h.connections, connection)
 	}
-
-	h.Unlock()
 }
 
 func (h *TaggedConnectionHub) Subscribe(connection *websocket.Conn) {
@@ -97,6 +96,7 @@ func (h *TaggedConnectionHub) CanHandle(cmd command.Command) bool {
 // `command.CommandHandler`
 func (h *TaggedConnectionHub) Handle(cmd command.Command) {
 	h.Lock()
+	defer h.Unlock()
 
 	switch cmd.(type) {
 	case *wst.ATAGCommand:
@@ -113,7 +113,6 @@ func (h *TaggedConnectionHub) Handle(cmd command.Command) {
 		var c = cmd.(*wst.RTAGCommand)
 
 		if !h.hasConnection(c.Connection) {
-			h.Unlock()
 			return
 		}
 
@@ -134,8 +133,6 @@ func (h *TaggedConnectionHub) Handle(cmd command.Command) {
 		h.connections[c.Connection] = retain
 		break
 	}
-
-	h.Unlock()
 }
 
 func (h *TaggedConnectionHub) collectTagsToAdd(
