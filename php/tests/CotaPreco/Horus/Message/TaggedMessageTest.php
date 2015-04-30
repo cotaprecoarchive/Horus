@@ -20,10 +20,7 @@ class TaggedMessageTest extends TestCase
      */
     protected function setUp()
     {
-        $this->message = new TaggedMessage(
-            Tag::fromString('tag'),
-            'message'
-        );
+        $this->message = new TaggedMessage(Tag::fromString('tag'), 'message');
     }
 
     /**

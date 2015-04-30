@@ -28,34 +28,4 @@ class HorusTest extends TestCase
         $horus = new Horus($transport);
         $horus->send($message);
     }
-
-    /**
-     * @test
-     */
-    public function sendAll()
-    {
-        $that = $this;
-
-        /**
-         * @return \PHPUnit_Framework_MockObject_MockObject
-         */
-        $createMessage = function () use ($that) {
-            return $this->getMock(MessageInterface::class);
-        };
-
-        /* @var MessageTransportInterface|\PHPUnit_Framework_MockObject_MockObject $transport */
-        $transport = $this->getMock(MessageTransportInterface::class);
-
-        $transport->expects($this->exactly(3))
-            ->method('send')
-            ->with($this->isInstanceOf(MessageInterface::class));
-
-        $horus = new Horus($transport);
-
-        $horus->sendAll([
-            $createMessage(),
-            $createMessage(),
-            $createMessage()
-        ]);
-    }
 }

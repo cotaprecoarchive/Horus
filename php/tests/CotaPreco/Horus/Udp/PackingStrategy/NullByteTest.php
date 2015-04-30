@@ -41,10 +41,7 @@ class NullByteTest extends TestCase
      */
     public function packTaggedMessage()
     {
-        $message = new TaggedMessage(
-            Tag::fromString("\0tag\0"),
-            "message\0"
-        );
+        $message = new TaggedMessage(Tag::fromString("\0tag\0"), "message\0");
 
         $packed = $this->strategy->pack($message);
 

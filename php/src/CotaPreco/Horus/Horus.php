@@ -29,23 +29,4 @@ class Horus
     {
         $this->transport->send($message);
     }
-
-    /**
-     * @param []MessageInterface $messages
-     */
-    public function sendAll(array $messages)
-    {
-        // ...ensure homogeneity of `$messages` (...only `MessageInterface` allowed)
-        $messages = array_map(
-            function (MessageInterface $message) {
-                return $message;
-            },
-            $messages
-        );
-
-        /* @var MessageInterface $message */
-        foreach ($messages as $message) {
-            $this->transport->send($message);
-        }
-    }
 }
