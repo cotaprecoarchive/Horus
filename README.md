@@ -1,41 +1,28 @@
 `Horus` [![Build Status](https://travis-ci.org/CotaPreco/Horus.svg?branch=develop)](https://travis-ci.org/CotaPreco/Horus)
 =====
-An simple and minimalist event-hub that we've been using for pipelining events to the client from any direction.
+Horus is an simple and minimalist event-hub for pipelining events from any direction to the client.
 
-Horus is pretty much something like the following art:
+![Horus](https://raw.githubusercontent.com/CotaPreco/Horus/develop/assets/Horus.png "Horus")
+
+- Dependency free: just drop and run; that's why is written in pure **Go**;
+- It works very well with what you have today;
+- Fast as hell, doesn't nothing rather than serving a WebSocket and deliver messages;
+- Small and tiny, atomized.
+
+# How it works
+![How it works](https://raw.githubusercontent.com/CotaPreco/Horus/develop/assets/1.png "How it works")
+
+In few words: your front-end will connect to **Horus** through a [WebSocket](http://en.wikipedia.org/wiki/WebSocket), and start waiting for new messages. And then you have what we call *Receiver*, *Receiver* is basically someone listening for incoming messages to send them to the clients (*...your front-end*).
+
+### Can I use Horus today?
+Yes. And if you're familiar with [Docker](http://www.docker.com/), you can be getting started with:
+
 ```
-                                         +----------+
-                                         |   PHP    |
-                                         +----------+
-                                           |
-                                           |
-                                           v
-+--------------------+     +-------+     +----------+     +-----+
-| Browser (ws://...) | <-- | Horus | <-- | Receiver | <-- | ... |
-+--------------------+     +-------+     +----------+     +-----+
-  |                          ^             ^
-  +--------------------------+             |
-                                           |
-                                         +----------+
-                                         |    JS    |
-                                         +----------+
+docker run -d -p 8000:8000 -p 7600:7600/udp cotapreco/horus:0.1.0
 ```
 
-As you can see, you have one `Receiver` and any client (...such as PHP) which sends stuff to the so-called `Receiver`, then Horus deliver it to your front-end. Very much simple.
+### It will scale to thousands of connections?
+Maybe yes, maybe not. Well, there isn't much to change, you just need to consider increasing the number servers running **Horus**, very simple, [HAProxy](http://www.haproxy.org/) can help you deal with that.
 
-### `Receiver`?
-Someone who receives something, lol. But seriously, c'mon, the `Receiver` is just someone waiting for messages, which will be delivered to somewhere, of course, your front-end.
-
-### Why the currently native receiver is UDP?
-Mainly because we don't care about losing packets. If you're transmitting transactional stuff, I mean, stuff that needs some reliability, don't do it first of all. You can't ensure that the client will receive it in the end; just think in the old *US Postal Service*, drop your mail in the mailbox and hopes the *postal service* will deliver it to the proper location.
-
-Aware of this, UDP is fast because, unlike TCP, there's no handshaking, connection setup, congestion control, packet sequencing, etc, you know, such things. Fast as hell, :japanese_goblin:.
-
-#### `ReceiveStrategy`
-As `Receiver` doesn't know what you send over the protocol and in which format *(..and shouldn't)*, and as this needs to be abstract, you need to implement it.
-
-For example, **we**'re using a null-byte approach, but you can have your own format, etc. So, in few words: `ZmqReceiver`, fine, but: the message arrives in which format? **XML**? **JSON**? You get the idea.
-
-Anyway, just implement the interface and attempt receive using the specified strategy.
-
-### *...Work in progress*
+# License
+[MIT License](https://github.com/CotaPreco/Horus/blob/develop/LICENSE) &copy; Cota Preço.
