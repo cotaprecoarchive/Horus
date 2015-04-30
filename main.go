@@ -25,7 +25,7 @@ var upgrader = websocket.Upgrader{
 }
 
 var (
-	VERSION   = "0.1.0-beta"
+	VERSION   = "N/A"
 	GITCOMMIT = "N/A"
 )
 
