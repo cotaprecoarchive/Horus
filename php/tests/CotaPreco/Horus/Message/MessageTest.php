@@ -18,4 +18,12 @@ class MessageTest extends TestCase
 
         $this->assertSame('message', $message->getMessage());
     }
+
+    /**
+     * @test
+     */
+    public function castsToString()
+    {
+        $this->assertSame('message', (string) new Message('message'));
+    }
 }

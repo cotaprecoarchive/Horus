@@ -4,6 +4,7 @@ namespace CotaPreco\Horus\Udp\PackingStrategy;
 
 use CotaPreco\Horus\Message\Message;
 use CotaPreco\Horus\Message\TaggedMessage;
+use CotaPreco\Horus\Message\TagSequencedMessage;
 use CotaPreco\Horus\Tag\Tag;
 use PHPUnit_Framework_TestCase as TestCase;
 
@@ -49,5 +50,25 @@ class NullByteTest extends TestCase
 
         $this->assertEquals(1, substr_count($packed, "\0"));
         $this->assertEquals("tag\0message", $packed);
+    }
+
+    /**
+     * @test
+     */
+    public function packTagSequencedMessage()
+    {
+        $message = new TagSequencedMessage(
+            [
+                new Tag('A'),
+                new Tag('B'),
+                new Tag('C')
+            ],
+            'message'
+        );
+
+        $packed = $this->strategy->pack($message);
+
+        $this->assertEquals(5, substr_count($packed, "\0"));
+        $this->assertEquals("A\0\0B\0\0C\0message", $packed);
     }
 }
