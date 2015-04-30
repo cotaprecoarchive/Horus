@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	ARTAG_REGEXP = regexp.MustCompile("(?i)^((?:A|R)TAG)\\s([a-zA-Z0-9_\\-:\\*\\s]+)$")
+	ARTAG_REGEXP = regexp.MustCompile("(?i)^(?:A|R)TAG\\s(.+)$")
 )
 
 type ARTagCommandRedispatcher struct {
@@ -27,7 +27,7 @@ func (h *ARTagCommandRedispatcher) CanHandle(cmd cmmd.Command) bool {
 	switch cmd.(type) {
 	case *SimpleTextCommand:
 		var c = cmd.(*SimpleTextCommand)
-		return ARTAG_REGEXP.MatchString(c.CommandStr)
+		return ARTAG_REGEXP.MatchString(c.String())
 	}
 
 	return false
@@ -36,7 +36,7 @@ func (h *ARTagCommandRedispatcher) CanHandle(cmd cmmd.Command) bool {
 func (h *ARTagCommandRedispatcher) Handle(cmd cmmd.Command) {
 	var c = cmd.(*SimpleTextCommand)
 
-	var commandAndTags = strings.Split(c.CommandStr, string([]byte{32}))
+	var commandAndTags = strings.Split(c.String(), string([]byte{32}))
 
 	var command = strings.ToUpper(commandAndTags[0])
 	var tags []tag.Tag
@@ -55,14 +55,14 @@ func (h *ARTagCommandRedispatcher) Handle(cmd cmmd.Command) {
 	switch strings.ToUpper(commandAndTags[0]) {
 	case "ATAG":
 		h.bus.Dispatch(&wst.ATAGCommand{
-			Connection: c.Connection,
+			Connection: c.GetFrom(),
 			Tags:       tags,
 		})
 		break
 
 	case "RTAG":
 		h.bus.Dispatch(&wst.RTAGCommand{
-			Connection: c.Connection,
+			Connection: c.GetFrom(),
 			Tags:       tags,
 		})
 		break

@@ -7,13 +7,21 @@ import (
 
 type SimpleTextCommand struct {
 	c.Command
-	CommandStr string
-	Connection *websocket.Conn
+	cmd        string
+	connection *websocket.Conn
 }
 
 func NewSimpleTextCommand(command string, connection *websocket.Conn) *SimpleTextCommand {
 	return &SimpleTextCommand{
-		CommandStr: command,
-		Connection: connection,
+		cmd:        command,
+		connection: connection,
 	}
+}
+
+func (c *SimpleTextCommand) String() string {
+	return c.cmd
+}
+
+func (c *SimpleTextCommand) GetFrom() *websocket.Conn {
+	return c.connection
 }
