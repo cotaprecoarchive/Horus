@@ -14,6 +14,10 @@ type UdpReceiver struct {
 	receiveStrategy receiver.ReceiveStrategy
 }
 
+const (
+	PACKET_SIZE = 512
+)
+
 func NewUdpReceiver(
 	host string,
 	port int,
@@ -32,16 +36,20 @@ func (r *UdpReceiver) Receive() {
 		Port: r.port,
 	})
 
-	util.Invariant(
-		err == nil,
-		"...unexpected error: `%s` (ListenUDP)",
-		err,
-	)
+	if err != nil {
+		return
+	}
+
+	// util.Invariant(
+	// 	err == nil,
+	// 	"...unexpected error: `%s` (ListenUDP)",
+	// 	err,
+	// )
 
 	defer conn.Close()
 
 	for {
-		message := make([]byte, 1024)
+		message := make([]byte, PACKET_SIZE)
 
 		_, _, err := conn.ReadFromUDP(message)
 
