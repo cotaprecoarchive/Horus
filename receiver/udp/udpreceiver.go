@@ -40,12 +40,6 @@ func (r *UdpReceiver) Receive() {
 		return
 	}
 
-	// util.Invariant(
-	// 	err == nil,
-	// 	"...unexpected error: `%s` (ListenUDP)",
-	// 	err,
-	// )
-
 	defer conn.Close()
 
 	for {
