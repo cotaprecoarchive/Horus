@@ -6,7 +6,7 @@ Horus is an simple and minimalist event-hub for pipelining events from any direc
 
 - Dependency free: just drop and run; that's why is written in pure **Go**;
 - It works very well with what you have today;
-- Fast as hell, doesn't nothing rather than serving a WebSocket and deliver messages;
+- Fast as hell, it does nothing rather than serving a WebSocket and deliver messages;
 - Small and tiny, atomized.
 
 # How it works
@@ -22,7 +22,7 @@ docker run -d -p 8000:8000 -p 7600:7600/udp cotapreco/horus:0.1.0
 ```
 
 ### It will scale to thousands of connections?
-Maybe yes, maybe not. Well, there isn't much to change, you just need to consider increasing the number servers running **Horus**, very simple, [HAProxy](http://www.haproxy.org/) can help you deal with that.
+Maybe yes, maybe not. Well, there isn't much to change, you just need to consider increasing the number servers running **Horus**, very simple. And also [HAProxy](http://www.haproxy.org/) can help you deal with that.
 
 # License
 [MIT License](https://github.com/CotaPreco/Horus/blob/develop/LICENSE) &copy; Cota Preço.

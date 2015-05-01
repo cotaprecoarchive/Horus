@@ -49,7 +49,7 @@ func main() {
 		flag.CommandLine.SetOutput(os.Stdout)
 
 		var help = strings.Trim(`
-Horus — An event-hub for pipelining events from any direction to the client :-)
+Horus — An simple and minimalist event-hub for pipelining events :-)
 
 USAGE:
 	horus [...OPTIONS]
@@ -104,24 +104,19 @@ OPTIONS:
 		conn, err := upgrader.Upgrade(w, r, nil)
 
 		if err != nil {
-			if _, ok := err.(websocket.HandshakeError); !ok {
-				util.Invariant(
-					err == nil,
-					"...`%s` on attempt to upgrade/handshake connection",
-					err,
-				)
-			}
+			return
 		}
 
 		defer conn.Close()
 
 		hub.Subscribe(conn)
 
+		defer hub.Unsubscribe(conn)
+
 		for {
 			messageType, message, err := conn.ReadMessage()
 
 			if err != nil {
-				hub.Unsubscribe(conn)
 				return
 			}
 
