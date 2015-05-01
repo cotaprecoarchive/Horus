@@ -2,7 +2,7 @@ FROM busybox:latest
 
 MAINTAINER Andrey K. Vital <andreykvital@gmail.com>
 
-COPY ./build/horus /app/horus
+COPY ./build/horus-linux-amd64 /app/horus
 
 ENV UDP_RECEIVER_HOST 0.0.0.0
 ENV UDP_RECEIVER_PORT 7600
