@@ -39,10 +39,6 @@ func (h *TaggedConnectionHub) Subscribe(connection *websocket.Conn) {
 }
 
 func (h *TaggedConnectionHub) Send(msg message.MessageInterface) {
-	if msg == nil {
-		return
-	}
-
 	switch msg.(type) {
 	// ...broadcast
 	case *message.Message:
@@ -78,6 +74,10 @@ func (h *TaggedConnectionHub) Send(msg message.MessageInterface) {
 
 // `util.Observer`
 func (h *TaggedConnectionHub) Update(args ...interface{}) {
+	if args[0] == nil {
+		return
+	}
+
 	h.Send(args[0].(message.MessageInterface))
 }
 
