@@ -17,8 +17,7 @@ for PLATFORM in $PLATFORMS; do
   OS=${PLATS["$GOOS"]}
 
   CGO_ENABLED=0 GOOS="$GOOS" GOARCH="$GOARCH" \
-    go build -a \
-    -tags netgo \
+    go build -a -tags netgo -installsuffix cgo \
     -ldflags "-w -s -X main.GITCOMMIT $GITCOMMIT -X main.VERSION $VERSION" \
     -o "build/horus-$GOOS-$GOARCH" \
     .
