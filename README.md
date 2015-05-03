@@ -79,7 +79,7 @@ Otherwise, you can go with [netcat](http://en.wikipedia.org/wiki/Netcat):
 $ echo -n "Hello, world" |nc -4u -w1 0.0.0.0 5000
 ```
 
-And also there's an [official PHP client](https://github.com/CotaPreco/Horus/tree/develop/php) and a list of **known clients**:
+And also there's an [official PHP client](https://github.com/CotaPreco/HorusPHPClient) and a list of **known clients**:
 
 | Author | URL
 | :----: | :---:
