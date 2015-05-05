@@ -49,7 +49,7 @@ func main() {
 		flag.CommandLine.SetOutput(os.Stdout)
 
 		var help = strings.Trim(`
-Horus — An simple and minimalist event-hub for pipelining events :-)
+Horus — A simple and minimalist event-hub for pipelining events :-)
 
 USAGE:
 	horus [...OPTIONS]

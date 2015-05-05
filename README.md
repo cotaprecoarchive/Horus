@@ -1,6 +1,6 @@
 `Horus` [![Build Status](https://travis-ci.org/CotaPreco/Horus.svg?branch=develop)](https://travis-ci.org/CotaPreco/Horus)
 =====
-Horus is an simple and minimalist event-hub for pipelining events from any direction to the client.
+Horus is a simple and minimalist event-hub for pipelining events from any direction to the client.
 
 ![Horus](https://raw.githubusercontent.com/CotaPreco/Horus/develop/assets/Horus.png "Horus")
 
