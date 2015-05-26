@@ -79,11 +79,12 @@ Otherwise, you can go with [netcat](http://en.wikipedia.org/wiki/Netcat):
 $ echo -n "Hello, world" |nc -4u -w1 0.0.0.0 5000
 ```
 
-And also there's an [official PHP client](https://github.com/CotaPreco/HorusPHPClient) and a list of **known clients**:
+And also there's a list of **known clients**:
 
 | Author | URL
 | :----: | :---:
-| [@julianocomg](https://github.com/julianocomg) | #javascript [horusjs](https://github.com/julianocomg/horusjs)
+| [@CotaPreco](https://github.com/CotaPreco) | #php [HorusPHPClient](https://github.com/CotaPreco/HorusPHPClient)
+| [@CotaPreco](https://github.com/CotaPreco) | #javascript [horusjs](https://github.com/julianocomg/horusjs)
 
 ### It will scale to thousands of connections?
 Maybe yes, maybe not. Well, there isn't much to change, you just need to consider increasing the number servers running **Horus**, very simple. And also [HAProxy](http://www.haproxy.org/) can help you deal with that.
