@@ -1,0 +1,42 @@
+.Dd May 17, 2015
+.Dt horus 1
+.Sh NAME
+.Nm horus
+.Nd A simple and minimalist event-hub for pipelining events :-)
+.Sh SYNOPSIS
+.Nm
+.Op Fl ws-host
+.br
+.Op Fl ws-port
+.br
+.Op Fl receiver-udp-host
+.br
+.Op Fl receiver-udp-port
+.br
+.Op Fl v
+.br
+.Op Fl h
+.br
+.Sh DESCRIPTION
+Horus is a simple and minimalist event-hub for pipelining events
+.Sh OPTIONS
+.Bl -ohang -offset
+.It Sy "-ws-host"
+Defines the address for the WebSocket server
+.It Sy "-ws-port"
+Defines in which port the WebSocket server will listen for connections
+.It Sy "-receiver-udp-host"
+Defines the IP address for UDP receiver
+.It Sy "-receiver-udp-port"
+Defines the port for UDP receiver
+.It Sy "-v"
+Prints the current version of Horus <3
+.It Sy "-h"
+Prints the default program help
+.El
+.Sh BUGS
+You can report at <https://github.com/CotaPreco/Horus/issues>
+.Sh AUTHOR
+Andrey K. Vital <andreykvital@gmail.com>
+.Sh GH
+<https://github.com/CotaPreco/Horus>
