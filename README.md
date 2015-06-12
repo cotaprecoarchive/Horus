@@ -68,7 +68,7 @@ ws.onmessage = function(e) {
 }
 ```
 
-#### How I can send messages to `UDP` receiver?
+#### How can I send messages to `UDP` receiver?
 If you're using **bash**:
 ```
 $ echo -n "Hello, world" >/dev/udp/0.0.0.0/5000
@@ -86,7 +86,7 @@ And also there's a list of **known clients**:
 | [@CotaPreco](https://github.com/CotaPreco) | #php [HorusPHPClient](https://github.com/CotaPreco/HorusPHPClient)
 | [@CotaPreco](https://github.com/CotaPreco) | #javascript [horusjs](https://github.com/julianocomg/horusjs)
 
-### It will scale to thousands of connections?
+### Will it scale to thousands of connections?
 Maybe yes, maybe not. Well, there isn't much to change, you just need to consider increasing the number servers running **Horus**, very simple. And also [HAProxy](http://www.haproxy.org/) can help you deal with that.
 
 # License
