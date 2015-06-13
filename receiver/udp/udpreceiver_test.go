@@ -36,7 +36,7 @@ func TestReceive(t *testing.T) {
 		Ch: ch,
 	}
 
-	receiver := NewUdpReceiver(RHOST, RPORT, strategy)
+	receiver := NewUdpReceiver(RHOST, RPORT, 1, strategy)
 	go receiver.Receive()
 
 	client, _ := net.DialUDP(
