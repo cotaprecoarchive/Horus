@@ -11,21 +11,20 @@ type UdpReceiver struct {
 	util.Observable
 	host            string
 	port            int
+	maxPacketSize   int
 	receiveStrategy receiver.ReceiveStrategy
 }
-
-const (
-	PACKET_SIZE = 512
-)
 
 func NewUdpReceiver(
 	host string,
 	port int,
+	maxPacketSize int,
 	receiveStrategy receiver.ReceiveStrategy,
 ) *UdpReceiver {
 	return &UdpReceiver{
 		host:            host,
 		port:            port,
+		maxPacketSize:   maxPacketSize,
 		receiveStrategy: receiveStrategy,
 	}
 }
@@ -43,7 +42,7 @@ func (r *UdpReceiver) Receive() {
 	defer conn.Close()
 
 	for {
-		message := make([]byte, PACKET_SIZE)
+		message := make([]byte, r.maxPacketSize)
 
 		_, _, err := conn.ReadFromUDP(message)
 

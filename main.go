@@ -30,18 +30,20 @@ var (
 )
 
 var (
-	defaultWsHost          = util.EnvOrDefault("WS_HOST", "0.0.0.0")
-	defaultWsPort          = util.EnvOrDefault("WS_PORT", "8000")
-	defaultUdpReceiverHost = util.EnvOrDefault("UDP_RECEIVER_HOST", "0.0.0.0")
-	defaultUdpReceiverPort = util.EnvOrDefault("UDP_RECEIVER_PORT", "7600")
+	defaultWsHost           = util.EnvOrDefault("WS_HOST", "0.0.0.0")
+	defaultWsPort           = util.EnvOrDefault("WS_PORT", "8000")
+	defaultUdpReceiverHost  = util.EnvOrDefault("UDP_RECEIVER_HOST", "0.0.0.0")
+	defaultUdpReceiverPort  = util.EnvOrDefault("UDP_RECEIVER_PORT", "7600")
+	defaultUdpMaxPacketSize = util.EnvOrDefault("UDP_PACKET_SIZE", "8192")
 )
 
 var (
-	flgVersion = flag.Bool("v", false, "")
-	udpHost    = flag.String("receiver-udp-host", defaultUdpReceiverHost, "")
-	udpPort    = flag.Int("receiver-udp-port", util.Str2int(defaultUdpReceiverPort), "")
-	wsHost     = flag.String("ws-host", defaultWsHost, "")
-	wsPort     = flag.Int("ws-port", util.Str2int(defaultWsPort), "")
+	flgVersion    = flag.Bool("v", false, "")
+	udpHost       = flag.String("receiver-udp-host", defaultUdpReceiverHost, "")
+	udpPort       = flag.Int("receiver-udp-port", util.Str2int(defaultUdpReceiverPort), "")
+	wsHost        = flag.String("ws-host", defaultWsHost, "")
+	wsPort        = flag.Int("ws-port", util.Str2int(defaultWsPort), "")
+	udpPacketSize = flag.Int("udp-max-packet-size", util.Str2int(defaultUdpMaxPacketSize), "")
 )
 
 func main() {
@@ -76,9 +78,12 @@ OPTIONS:
 			}, {
 				"-receiver-udp-port",
 				"Defines the port for receiver listen on",
+			}, {
+				"-udp-max-packet-size",
+				"Defines the maximum buffer size for packet",
 			},
 		} {
-			opts += fmt.Sprintf("\t%-18.20s /* %s */\n", opt[0], opt[1])
+			opts += fmt.Sprintf("\t%-25.20s /* %s */\n", opt[0], opt[1])
 		}
 
 		fmt.Printf(help, opts)
@@ -127,7 +132,7 @@ OPTIONS:
 	})
 
 	// ---
-	receiver := udp.NewUdpReceiver(*udpHost, *udpPort, new(udp.NullByteReceiveStrategy))
+	receiver := udp.NewUdpReceiver(*udpHost, *udpPort, *udpPacketSize, new(udp.NullByteReceiveStrategy))
 	receiver.Attach(hub)
 
 	go receiver.Receive()
