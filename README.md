@@ -45,6 +45,7 @@ horus [...opts]
 | `-ws-port` | *Optional* | `-ws-port 8888` | 8000
 | `-receiver-udp-host` | *Optional* | `-receiver-udp-host 127.0.0.1` | 0.0.0.0
 | `-receiver-udp-port` | *Optional* | `-receiver-udp-port 5000` | 7600
+| `-udp-max-packet-size` | *Optional* | `-udp-max-packet-size 65507` | 8192
 
 ## Getting started
 ```
@@ -91,4 +92,4 @@ And also there's a list of **known clients**:
 Maybe yes, maybe not. Well, there isn't much to change, you just need to consider increasing the number servers running **Horus**, very simple. And also [HAProxy](http://www.haproxy.org/) can help you deal with that.
 
 # License
-[MIT License](https://github.com/CotaPreco/Horus/blob/develop/LICENSE) &copy; Cota Preço.
+[MIT](https://github.com/CotaPreco/Horus/blob/develop/LICENSE) &copy; Cota Preço.
