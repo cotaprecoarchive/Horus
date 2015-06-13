@@ -138,6 +138,14 @@ OPTIONS:
 	go receiver.Receive()
 	// ---
 
+	fmt.Printf(
+		"Udp Receiver — %s:%d\nWebSocket — %s:%d\n",
+		*udpHost,
+		*udpPort,
+		*wsHost,
+		*wsPort,
+	)
+
 	err := http.ListenAndServe(
 		fmt.Sprintf("%s:%d", *wsHost, *wsPort),
 		nil,
