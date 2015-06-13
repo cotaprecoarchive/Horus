@@ -153,7 +153,7 @@ OPTIONS:
 
 	util.Invariant(
 		err == nil,
-		"...unexpected `%s` (ListenAndServe)",
+		"Unexpected `%s` (ListenAndServe)",
 		err,
 	)
 }
