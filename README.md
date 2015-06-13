@@ -19,11 +19,12 @@ In few words: your front-end will connect to **Horus** through a [WebSocket](htt
 
 ## Install
 ```
-export GHR="https://github.com/CotaPreco/Horus/releases/download/v0.1.0"
-wget --quiet -O Horus.tgz $GHR/horus-`uname -s`-`uname -m`.tar.gz
-unset GHR && tar -zxf Horus.tgz
-mv horus /usr/local/bin/horus
-chmod +x /usr/local/bin/horus
+curl -sL https://raw.githubusercontent.com/CotaPreco/Horus/develop/install.sh |sh
+```
+
+Or via **wget**:
+```
+wget -qO- https://raw.githubusercontent.com/CotaPreco/Horus/develop/install.sh |sh
 ```
 
 And if you're familiar with [Docker](http://www.docker.com/), you can be getting started with:
