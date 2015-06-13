@@ -5,7 +5,7 @@ has_command() {
   command -v "$@" >/dev/null 2>&1
 }
 
-declare -r GHR="https://github.com/CotaPreco/Horus/releases/download/v0.1.0"
+declare -r GHR="https://github.com/CotaPreco/Horus/releases/download/v0.1.1"
 declare -r TAR_URL=$GHR/horus-`uname -s`-`uname -m`.tar.gz
 declare -r DOWNLOAD_TO="/tmp/Horus-latest.tar.gz"
 
