@@ -15,15 +15,6 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
-	CheckOrigin: func(r *http.Request) bool {
-		// @link https://godoc.org/github.com/gorilla/websocket#hdr-Origin_Considerations
-		return true
-	},
-}
-
 var (
 	VERSION   = "N/A"
 	GITCOMMIT = "N/A"
@@ -105,38 +96,36 @@ OPTIONS:
 	bus.PushHandler(hub)
 	bus.PushHandler(wsc.NewARTagCommandRedispatcher(bus))
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		conn, err := upgrader.Upgrade(w, r, nil)
+	http.HandleFunc("/", func(writer http.ResponseWriter, request *http.Request) {
+		connection, err := ws.WebSocketUpgrader.Upgrade(writer, request, nil)
 
 		if err != nil {
 			return
 		}
 
-		defer conn.Close()
+		defer connection.Close()
 
-		hub.Subscribe(conn)
+		hub.Subscribe(connection)
 
-		defer hub.Unsubscribe(conn)
+		defer hub.Unsubscribe(connection)
 
 		for {
-			messageType, message, err := conn.ReadMessage()
+			_type, message, err := connection.ReadMessage()
 
 			if err != nil {
 				return
 			}
 
-			if messageType == websocket.TextMessage {
-				bus.Dispatch(wsc.NewSimpleTextCommand(string(message), conn))
+			if _type == websocket.TextMessage {
+				bus.Dispatch(wsc.NewSimpleTextCommand(string(message), connection))
 			}
 		}
 	})
 
-	// ---
 	receiver := udp.NewUdpReceiver(*udpHost, *udpPort, *udpPacketSize, new(udp.NullByteReceiveStrategy))
 	receiver.Attach(hub)
 
 	go receiver.Receive()
-	// ---
 
 	fmt.Printf(
 		"Udp Receiver — %s:%d\nWebSocket — %s:%d\n",
@@ -151,9 +140,7 @@ OPTIONS:
 		nil,
 	)
 
-	util.Invariant(
-		err == nil,
-		"Unexpected `%s` (ListenAndServe)",
-		err,
-	)
+	if err != nil {
+		fmt.Print(err)
+	}
 }
