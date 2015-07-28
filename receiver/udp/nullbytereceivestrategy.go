@@ -37,12 +37,10 @@ func (s *NullByteReceiveStrategy) Receive(msg []byte) message.MessageInterface {
 
 	var trimmed = trim(msg[last:])
 
-	// > 0 == 1 tagged
 	if len(tags) == 1 {
 		return message.NewTaggedMessage(tags[0], trimmed)
 	}
 
-	// ...sequence (full-match)
 	return message.NewTagSequencedMessage(tags, trimmed)
 }
 
@@ -58,10 +56,8 @@ func extractTags(msg []byte) []tag.Tag {
 
 		var nextIsNullByte = msg[i+1] == 0
 
-		// ...current && next is null-byte
 		var nx = msg[i] == 0 && nextIsNullByte
 
-		// ...current is not null-byte, but next && next is the last null-byte
 		var lt = msg[i] != 0 && nextIsNullByte && (i+1) == last
 
 		if nx || lt {

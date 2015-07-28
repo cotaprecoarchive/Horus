@@ -7,7 +7,6 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-// --
 type Observable struct {
 	util.Observable
 }
@@ -19,8 +18,6 @@ type Observer struct {
 func (m *Observer) Update(args ...interface{}) {
 	m.Called(args)
 }
-
-// --
 
 func TestObservableNotifyAll(t *testing.T) {
 	observer := new(Observer)

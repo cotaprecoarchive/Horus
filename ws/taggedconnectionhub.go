@@ -14,8 +14,6 @@ import (
 type TaggedConnectionHub struct {
 	*sync.Mutex
 	connections map[*websocket.Conn][]tag.Tag
-	// util.Observer
-	// command.CommandHandler
 }
 
 func NewTaggedConnectionHub() *TaggedConnectionHub {
@@ -40,7 +38,6 @@ func (h *TaggedConnectionHub) Subscribe(connection *websocket.Conn) {
 
 func (h *TaggedConnectionHub) Send(msg message.MessageInterface) {
 	switch msg.(type) {
-	// ...broadcast
 	case *message.Message:
 		var m = msg.(*message.Message)
 
@@ -48,7 +45,7 @@ func (h *TaggedConnectionHub) Send(msg message.MessageInterface) {
 			connection.WriteMessage(websocket.TextMessage, m.Payload)
 		}
 		break
-	// ...contains a particular tag
+
 	case *message.TaggedMessage:
 		var m = msg.(*message.TaggedMessage)
 
@@ -59,7 +56,6 @@ func (h *TaggedConnectionHub) Send(msg message.MessageInterface) {
 		}
 		break
 
-	// ...contains all tags (refs gh:issues #11)
 	case *message.TagSequencedMessage:
 		var m = msg.(*message.TagSequencedMessage)
 
@@ -72,7 +68,6 @@ func (h *TaggedConnectionHub) Send(msg message.MessageInterface) {
 	}
 }
 
-// `util.Observer`
 func (h *TaggedConnectionHub) Update(args ...interface{}) {
 	if args[0] == nil {
 		return
@@ -81,7 +76,6 @@ func (h *TaggedConnectionHub) Update(args ...interface{}) {
 	h.Send(args[0].(message.MessageInterface))
 }
 
-// `command.CommandHandler`
 func (h *TaggedConnectionHub) CanHandle(cmd command.Command) bool {
 	switch cmd.(type) {
 	case *wst.ATAGCommand:
@@ -93,7 +87,6 @@ func (h *TaggedConnectionHub) CanHandle(cmd command.Command) bool {
 	return false
 }
 
-// `command.CommandHandler`
 func (h *TaggedConnectionHub) Handle(cmd command.Command) {
 	h.Lock()
 	defer h.Unlock()
@@ -154,9 +147,9 @@ func (h *TaggedConnectionHub) collectTagsToAdd(
 	return add
 }
 
-func (h *TaggedConnectionHub) hasConnection(connection *websocket.Conn) bool {
-	for conn, _ := range h.connections {
-		if conn == connection {
+func (h *TaggedConnectionHub) hasConnection(candidate *websocket.Conn) bool {
+	for connection, _ := range h.connections {
+		if connection == candidate {
 			return true
 		}
 	}

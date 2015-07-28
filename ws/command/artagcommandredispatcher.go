@@ -42,7 +42,6 @@ func (h *ARTagCommandRedispatcher) Handle(cmd cmmd.Command) {
 	var tags []tag.Tag
 
 	if command == "ATAG" || command == "RTAG" {
-		// ...collect and accumulate tags ignoring whose is `err != nil`
 		for _, t := range commandAndTags[1:] {
 			tag, err := tag.NewTag(t)
 

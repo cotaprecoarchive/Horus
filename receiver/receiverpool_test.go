@@ -22,9 +22,6 @@ func NewReceiver() *R {
 func TestNewReceiverPool(t *testing.T) {
 	var pool = receiver.NewReceiverPool(make([]receiver.Receiver, 0))
 
-	// covers: Size
-	// covers: AddReceiver
-
 	assert.Equal(t, 0, pool.Size())
 
 	pool.AddReceiver(NewReceiver())

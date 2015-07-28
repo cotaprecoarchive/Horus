@@ -2,6 +2,7 @@ package tag
 
 import (
 	"errors"
+	"fmt"
 	"regexp"
 )
 
@@ -13,7 +14,7 @@ func NewTag(t string) (Tag, error) {
 	// RFC 3986 - Section 3.4
 	// @link http://tools.ietf.org/html/rfc3986#page-23
 	if matched, _ := regexp.MatchString("(?i)^[a-zA-Z0-9-\\._~!\\$&\\'\\(\\)\\*\\+\\,;=\\:@\\/\\?]{1,255}$", t); !matched {
-		return nil, errors.New("A tag should contains only `A-Z a-z 0-9 - . _ ~ ! $ & ' ( ) * + , ; = : @ / ?` 1..255")
+		return nil, errors.New(fmt.Sprintf("Is not a valid tag: `%s`", t))
 	}
 
 	return &tag{
