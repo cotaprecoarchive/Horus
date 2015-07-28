@@ -1,3 +1,5 @@
+.PHONY: build
+
 build: tests fetch-dependencies
 	@./build.sh
 
